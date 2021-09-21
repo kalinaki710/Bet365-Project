@@ -3,17 +3,38 @@
   <head>
     <meta charset="utf-8">
     <title> My project </title>
+    <link rel="stylesheet" href="index.css">
   </head>
   <body>
     <h1>TO DO</h1>
-    <h2>Shopping list</h2>
-    <ul>
-      <li><input type="checkbox" id="checkobox1"> Apples <input type="number" id="quantity1"></li>
-      <li><input type="checkbox" id="checkobox2"> Potatoes<input type="number" id="quantity2"></li>
+    <h2><button type="button" class="collapsible">&#9660;</button>Shopping list</h2>
+    <ul class="list">
+      <li>
+        <label class="container" >
+          <input  type="checkbox"  id="checkobox1"/>
+          <span class="checkmark"></span>
+          Apples
+          <input type="number" id="quantity1">
+        </label>
+      </li>
+      <li>
+        <label class="container" >
+          <input  type="checkbox"  id="checkobox2"/>
+          <span class="checkmark"></span>
+          Potatoes
+          <input type="number" id="quantity2">
+        </label>
+      </li>
     </ul>
-    <h2>Gas bill.</h2>
-    <ul>
-      <li><input type="checkbox" id="checkobox3"> Read the metre</li>
+    <h2><button type="button" class="collapsible">&#9660;</button>Gas bill</h2>
+    <ul class="list">
+      <li>
+        <label class="container" >
+          <input  type="checkbox"  id="checkobox3"/>
+          <span class="checkmark"></span>
+          Read the metre
+        </label>
+      </li>
     </ul>
   </body>
 </html>
