@@ -1,18 +1,12 @@
-.container {
-  display: block;
+.list {
   position: relative;
   padding-left: 35px;
-  margin-bottom: 12px;
   cursor: pointer;
   font-size: 22px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }
 
 /* Hide the browser's default checkbox */
-.container input[type="checkbox"] {
+.list input[type="checkbox"] {
   position: absolute;
   opacity: 0;
   cursor: pointer;
@@ -32,13 +26,8 @@
 }
 
 /* On mouse-over, add a grey background color */
-.container:hover input ~ .checkmark {
+.list:hover input ~ .checkmark {
   background-color: #ccc;
-}
-
-/* When the checkbox is checked, add a blue background */
-.container input:checked ~ .checkmark {
-  background-color: #2196F3;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -47,27 +36,19 @@
   position: absolute;
 }
 
-/* Show the checkmark when checked */
-.container input:checked ~ .checkmark:after {
-  display: block;
-}
-
 /* Style the checkmark/indicator */
-.container .checkmark:after {
+.list .checkmark:after {
   left: 9px;
   top: 5px;
   width: 5px;
   height: 10px;
   border: solid white;
   border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
 
-.list{
-   list-style-type: none;
-   margin: 0;
-   padding: 0;
+.nonbullets{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
-
