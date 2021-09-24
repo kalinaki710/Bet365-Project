@@ -3,37 +3,31 @@
   <head>
     <meta charset="utf-8">
     <title> My project </title>
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
     <h1>TO DO</h1>
     <h2><button type="button" class="collapsible">&#9660;</button>Shopping list</h2>
-    <ul class="list">
-      <li>
-        <label class="container" >
+    <ul class="nonbullets">
+      <li class="list">     
           <input  type="checkbox"  id="checkobox1"/>
           <span class="checkmark"></span>
           Apples
-          <input type="number" id="quantity1">
-        </label>
+          <input type="number" id="quantity1"/>
       </li>
-      <li>
-        <label class="container" >
+      <li class="list">
           <input  type="checkbox"  id="checkobox2"/>
           <span class="checkmark"></span>
           Potatoes
-          <input type="number" id="quantity2">
-        </label>
+          <input type="number" id="quantity2"/>
       </li>
     </ul>
     <h2><button type="button" class="collapsible">&#9660;</button>Gas bill</h2>
-    <ul class="list">
-      <li>
-        <label class="container" >
-          <input  type="checkbox"  id="checkobox3"/>
-          <span class="checkmark"></span>
-          Read the metre
-        </label>
+    <ul class="nonbullets">
+      <li class="list">
+        <input  type="checkbox"  id="checkobox3"/>
+        <span class="checkmark"></span>
+        Read the metre
       </li>
     </ul>
   </body>
