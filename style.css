@@ -5,15 +5,6 @@
   font-size: 22px;
 }
 
-/* Hide the browser's default checkbox */
-.list input[type="checkbox"] {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-
 /* Create a custom checkbox */
 .checkmark {
   position: absolute;
@@ -26,18 +17,12 @@
 }
 
 /* On mouse-over, add a grey background color */
-.list:hover input ~ .checkmark {
+.checkmark:hover {
   background-color: #ccc;
 }
 
-/* Create the checkmark/indicator (hidden when not checked) */
-.checkmark:after {
-  content: "";
-  position: absolute;
-}
-
 /* Style the checkmark/indicator */
-.list .checkmark:after {
+.checkmark:after {
   left: 9px;
   top: 5px;
   width: 5px;
@@ -45,6 +30,8 @@
   border: solid white;
   border-width: 0 3px 3px 0;
   transform: rotate(45deg);
+  content: "";
+  position: absolute;
 }
 
 .nonbullets{
