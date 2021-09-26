@@ -1,9 +1,14 @@
 .list {
   position: relative;
   padding-left: 35px;
+  padding-bottom: 2.5px;
+  padding-top: 2px;
   cursor: pointer;
   font-size: 22px;
+  border-bottom: solid 2px;
+  margin-right: 71%;
 }
+
 
 /* Create a custom checkbox */
 .checkmark {
