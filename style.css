@@ -1,11 +1,11 @@
-.list {
+.listItem {
   position: relative;
   padding-left: 35px;
   padding-bottom: 2.5px;
   padding-top: 2px;
   cursor: pointer;
   font-size: 22px;
-  border-bottom: solid 2px;
+  border-bottom: solid 2px black;
   margin-right: 71%;
 }
 
@@ -39,8 +39,7 @@
   position: absolute;
 }
 
-.nonbullets{
+.ListItemNonBullets{
   list-style-type: none;
-  margin: 0;
   padding: 0;
 }
