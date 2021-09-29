@@ -42,4 +42,21 @@
 .ListItemNonBullets{
   list-style-type: none;
   padding: 0;
+  display: none;
+}
+
+.button {
+  background-color: #777;
+  color: white;
+  cursor: pointer;
+  padding: 9px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 22px;
+}
+
+.active, .button:hover {
+  background-color: #555;
 }
