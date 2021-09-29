@@ -11,7 +11,7 @@
 
 
 /* Create a custom checkbox */
-.checkmark {
+.circle {
   position: absolute;
   top: 0;
   left: 0;
@@ -22,12 +22,12 @@
 }
 
 /* On mouse-over, add a grey background color */
-.checkmark:hover {
+.circle:hover {
   background-color: #ccc;
 }
 
 /* Style the checkmark/indicator */
-.checkmark:after {
+.tick {
   left: 9px;
   top: 5px;
   width: 5px;
@@ -37,12 +37,12 @@
   transform: rotate(45deg);
   content: "";
   position: absolute;
-}
+} 
 
 .ListItemNonBullets{
   list-style-type: none;
   padding: 0;
-  display: none;
+ // display: none;
 }
 
 .button {
