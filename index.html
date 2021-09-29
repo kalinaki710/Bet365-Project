@@ -7,7 +7,7 @@
   </head>
   <body>
     <h1>TO DO</h1>
-    <h2><button type="button" class="collapsible">&#9660;</button>Shopping list</h2>
+    <button type="button" class="button">&#9660; Shopping list</button>
     <ul class="ListItemNonBullets">
       <li class="listItem">
           <span class="checkmark"></span>
@@ -20,12 +20,28 @@
           <input type="number" id="quantity2"/>
       </li>
     </ul>
-    <h2><button type="button" class="collapsible">&#9660;</button>Gas bill</h2>
+    <button type="button" class="button">&#9660; Gas bill</button>
     <ul class="ListItemNonBullets">
       <li class="listItem">
         <span class="checkmark"></span>
         Read the metre
       </li>
     </ul>
+    <script>
+      var buttons = document.getElementsByClassName("button");
+      var i;
+
+      for (i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener("click", function() {
+          var content = this.nextElementSibling;
+          console.log(content);
+          if (content.style.display === "block") {
+            content.style.display = "none";
+          } else {
+            content.style.display = "block";
+            }
+        });
+      }
+    </script>
   </body>
 </html>
