@@ -7,35 +7,44 @@
   </head>
   <body>
     <h1>TO DO</h1>
-    <button type="button" class="button">&#9660; Shopping list</button>
     <ul class="ListItemNonBullets">
-      <li class="listItem">
-          <span class="circle"></span>
-          <span class="tick"></span>
-          Apples
-          <input type="number" id="quantity1"/>
+      <li>
+        <button type="button" class="button">&#9660; Shopping list</button>
+        <ul class="ListItemNonBullets">
+          <li class="listItem">
+              <span class="circle"></span>
+              <span class="tick"></span>
+              Apples
+              <input id="quantity1" type="number"/>
+          </li>
+          <li class="listItem">
+            <span class="circle"></span>
+            <span class="tick"></span>
+              Potatoes
+              <input id="quantity2" type="number"/>
+          </li>
+        </ul>
       </li>
-      <li class="listItem">
-        <span class="circle"></span>
-        <span class="tick"></span>
-          Potatoes
-          <input type="number" id="quantity2"/>
+      <li>
+        <button type="button" class="button">&#9660; Gas bill</button>
+        <ul class="ListItemNonBullets">
+          <li class="listItem">
+            <span class="circle"></span>
+            <span class="tick"></span>
+            Read the metre
+          </li>
+        </ul>
       </li>
     </ul>
-    <button type="button" class="button">&#9660; Gas bill</button>
-    <ul class="ListItemNonBullets">
-      <li class="listItem">
-        <span class="circle"></span>
-        <span class="tick"></span>
-        Read the metre
-      </li>
-    </ul>
-    <script>
-      var buttons = document.getElementsByClassName("button");
-      var i;
 
-      for (i = 0; i < buttons.length; i++) {
-        buttons[i].addEventListener("click", function() {
+    <script>
+
+      var buttons = document.getElementsByClassName("button");
+      // Counter for iterating through all the elements
+      var count;
+
+      for (count = 0; count < buttons.length; count++) {
+        buttons[count].addEventListener("click", function() {
           var content = this.nextElementSibling;
           if (content.style.display === "block") {
             content.style.display = "none";
@@ -46,9 +55,8 @@
       }
 
       var checkmarks = document.getElementsByClassName("circle");
-      for (i = 0; i < checkmarks.length; i++) {
-        checkmarks[i].addEventListener("click", function(){
-          console.log(this.style. background);
+      for (count = 0; count < checkmarks.length; count++) {
+        checkmarks[count].addEventListener("click", function(){
           if (this.style. background === "green") {
             this.style.background = "#eee";
           } else {
