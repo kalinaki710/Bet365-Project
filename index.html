@@ -85,7 +85,6 @@
         }else{
           const ul = document.querySelector(".ListParentItemNonBullets");
           const li = document.createElement("li");
-          //li.innerHTML = addInput.value;
           const button = document.createElement("button");
           button.type = "button";
           button.innerHTML = "&#9660; " + addInput.value;
@@ -103,6 +102,21 @@
           newList.classList.add("ListChildItemNonBullets");
           li.appendChild(newList);
           ul.appendChild(li);
+          const addButton = document.createElement("button");
+          addButton.type = "button";
+          addButton.innerHTML = "Insert";
+          addButton.classList.add("btn-primary");
+          const insert = document.createElement("input");
+          insert.type = "text";
+          addButton.onclick = function(){
+            if(addInput.value === ""){
+              alert("Enter the list name please!!!");
+            }else{
+              const ul = document.querySelector(".ListChildItemNonBullets");
+              const li = document.createElement("li");
+            }
+          }
+          ul.appendChild(addButton);
         }
       })
     </script>
