@@ -36,89 +36,10 @@
         </ul>
       </li>
     </ul>
-    <div>
-      <input type="text" id="addInput">
-    </div>
-    <div>
-      <button id="addBtn" type="button" class="btn-primary"> Add Item </button>
-    </div>
+    
+    <input type="text" class="newListInput">
+    <input type="button" class="addBtn" value="Add Item" onclick="addParrent()">
 
-    <script>
-
-      /******************************************/
-      // Make it collapsable
-      const buttons = document.getElementsByClassName("button");
-      // Counter for iterating through all the elements
-      var count;
-
-      for (count = 0; count < buttons.length; count++) {
-        buttons[count].addEventListener("click", function() {
-          var content = this.nextElementSibling;
-          if (content.style.display === "block") {
-            content.style.display = "none";
-          } else {
-            content.style.display = "block";
-            }
-        });
-      }
-
-      /******************************************/
-      // Make the checkbox green on click
-      const checkmarks = document.getElementsByClassName("circle");
-      for (count = 0; count < checkmarks.length; count++) {
-        checkmarks[count].addEventListener("click", function(){
-          if (this.style. background === "green") {
-            this.style.background = "#eee";
-          } else {
-            this.style.background = "green";
-            }
-        });
-      }
-
-      /******************************************/
-      // Add a parent item
-      const addInput = document.querySelector("#addInput");
-      const addBtn = document.querySelector("#addBtn");
-      addBtn.addEventListener("click", () =>{
-        if(addInput.value === ""){
-          alert("Enter the list name please!!!");
-        }else{
-          const ul = document.querySelector(".ListParentItemNonBullets");
-          const li = document.createElement("li");
-          const button = document.createElement("button");
-          button.type = "button";
-          button.innerHTML = "&#9660; " + addInput.value;
-          button.onclick = function () {
-            let child = this.nextElementSibling;
-            if (child.style.display === "block") {
-              child.style.display = "none";
-            } else {
-              child.style.display = "block";
-              }
-          };
-          button.classList.add("button");
-          li.appendChild(button);
-          const newList = document.createElement("ul");
-          newList.classList.add("ListChildItemNonBullets");
-          li.appendChild(newList);
-          ul.appendChild(li);
-          const addButton = document.createElement("button");
-          addButton.type = "button";
-          addButton.innerHTML = "Insert";
-          addButton.classList.add("btn-primary");
-          const insert = document.createElement("input");
-          insert.type = "text";
-          addButton.onclick = function(){
-            if(addInput.value === ""){
-              alert("Enter the list name please!!!");
-            }else{
-              const ul = document.querySelector(".ListChildItemNonBullets");
-              const li = document.createElement("li");
-            }
-          }
-          ul.appendChild(addButton);
-        }
-      })
-    </script>
+    <script src="script.js"></script>
   </body>
 </html>
