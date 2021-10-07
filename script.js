@@ -91,6 +91,7 @@
              newItem.appendChild(checkmarkTick);
              const quantity = document.createElement("input");
              quantity.type = "number";
+             quantity.style.display = "none"
              newItem.appendChild(quantity);
              const deleteButton = document.createElement("button");
              deleteButton.innerHTML = "Delete";
@@ -108,11 +109,17 @@
                  textBox.className = "newItemInput";
                  textBox.value = label.innerHTML;
                  label.parentNode.insertBefore(textBox, label);
+                 quantity.style.display = "inline";
+                 quantity.removeAttribute("readonly");
                }else {
                  label.style.display = "inline";
                  textBox = label.previousElementSibling;
                  label.innerHTML = textBox.value;
                  textBox.remove();
+                if (quantity.value == 0) {
+                  quantity.style.display = "none";
+                }
+                quantity.setAttribute("readonly", "true");
                }
 
              };
@@ -121,5 +128,15 @@
             }
           }
           li.appendChild(addButton);
+          dltBtn = document.createElement("button");
+          dltBtn.type = "button";
+          dltBtn.innerHTML = "Delete";
+          dltBtn.classList.add("btn-primary");
+          dltBtn.style.display = "block"
+          dltBtn.onclick = function(){
+            li.remove();
+            button.remove();
+          }
+          li.appendChild(dltBtn);
         }
       }
