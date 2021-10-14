@@ -1,5 +1,4 @@
-
-      function makeCollapsable(element){
+function makeCollapsable(element){
           element.style.display = (element.style.display === "block" ? "none" : "block");
       }
 
@@ -7,8 +6,18 @@
         element.style.background = (element.style.background === "green" ? "#eee" : "green");
       }
 
+      function  createmarkUpForParent(value) {
+        return `
+          <button type="button" class="button" onclick="makeCollapsable(this.nextElementSibling)">&#9660; ${value}</button>
+          <ul class="ListChildItemNonBullets" id="${value}list">
+            <input type="text" id="${value}input" class = "newItemInput"><br>
+            <button type="button" class="btn-primary" onclick=addChildIfPossible(document.getElementById('${value}list'),document.getElementById('${value}input'))>Insert</button>
+          </ul>
+        `;
+      } 
+
       function createParent(addInput){
-        const ul = document.getElementsByClassName("ListParentItemNonBullets")[0]
+        /*const ul = document.getElementsByClassName("ListParentItemNonBullets")[0]
         const li = document.createElement("li");
         li.classList.add("ListParentItemNonBullets");
         const button = document.createElement("button");
@@ -24,7 +33,6 @@
         addButton.type = "button";
         addButton.innerHTML = "Insert";
         addButton.classList.add("btn-primary");
-        addButton.style.display = "block"
         const input = document.createElement("input");
         input.type = "text";
         input.className = "newItemInput";
@@ -32,6 +40,14 @@
         newList.appendChild(addButton);
         button.addEventListener("click",function(){makeCollapsable(button.nextElementSibling)})
         addButton.addEventListener("click",function(){addChildIfPossible(newList,input)})
+        */
+       
+        const ul = document.getElementsByClassName("ListParentItemNonBullets")[0]
+        const li = document.createElement("li");
+        li.classList.add("ListParentItemNonBullets");
+        ul.appendChild(li);
+        
+        li.innerHTML= createmarkUpForParent(addInput.value);
       }
 
       function addCheckBox(newItem){
@@ -89,6 +105,7 @@
           let quantity = addQuantity(newItem)
           addDeleteBtn(newItem)
           addEditBtn(newItem,label, quantity)
+          console.log(element)
           element.appendChild(newItem)
         }
 
