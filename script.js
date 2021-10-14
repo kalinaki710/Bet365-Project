@@ -8,7 +8,7 @@
       }
 
       function createParent(addInput){
-        const ul = document.querySelector(".ListParentItemNonBullets");
+        const ul = document.getElementsByClassName("ListParentItemNonBullets")[0]
         const li = document.createElement("li");
         li.classList.add("ListParentItemNonBullets");
         const button = document.createElement("button");
@@ -31,7 +31,7 @@
         newList.appendChild(input);
         newList.appendChild(addButton);
         button.addEventListener("click",function(){makeCollapsable(button.nextElementSibling)})
-        addButton.addEventListener("click",function(){addChild(newList,input)})
+        addButton.addEventListener("click",function(){addChildIfPossible(newList,input)})
       }
 
       function addCheckBox(newItem){
@@ -44,16 +44,7 @@
         newItem.appendChild(checkmarkTick);
       }
 
-      function checkIfThereIsInput(addInput){
-        if(addInput.value === ""){
-          alert("Enter the list name please!!!");
-        }
-        else{
-          createParent(addInput)
-        }
-      }
-
-        function edit(label){
+        function edit(label, quantity){
           if (label.style.display != "none"){
             label.style.display = "none";
             textBox = document.createElement("input");
@@ -61,35 +52,44 @@
             textBox.className = "newItemInput";
             textBox.value = label.innerHTML;
             label.parentNode.insertBefore(textBox, label);
+            quantity.style.display = "inline";
+            quantity.removeAttribute("readonly");
           }else {
             label.style.display = "inline";
             textBox = label.previousElementSibling;
             label.innerHTML = textBox.value;
             textBox.remove();
-          }
+            if (quantity.value == 0) {
+              quantity.style.display = "none";
+            }
+            quantity.setAttribute("readonly", "true");
+          } 
         }
 
-        function addEditBtn(newItem, label){
+        function addEditBtn(newItem, label, quantity){
           const editButton = document.createElement("button");
           editButton.innerHTML = "Edit";
-          editButton.addEventListener("click",function(){edit(label)})
+          editButton.addEventListener("click",function(){edit(label, quantity)})
           newItem.appendChild(editButton);
         }
 
-        function addChild(element, input){
+        function addChildIfPossible(element, input){
           if(input.value === ""){
             alert("Enter the list name please!!!");
           }else{
-            const newItem = document.createElement("li");
-            newItem.classList.add("listItem");
-            label = addLabel(newItem, input)
-            console.log(label)
-            addCheckBox(newItem)
-            addQuantity(newItem)
-            addDeleteBtn(newItem)
-            addEditBtn(newItem,label)
-            element.appendChild(newItem)
+            addChild(element, input)
           }
+        }
+
+        function addChild(element, input){
+          const newItem = document.createElement("li");
+          newItem.classList.add("listItem");
+          let label = addLabel(newItem, input)
+          addCheckBox(newItem)
+          let quantity = addQuantity(newItem)
+          addDeleteBtn(newItem)
+          addEditBtn(newItem,label, quantity)
+          element.appendChild(newItem)
         }
 
         function addLabel(newItem, input){
@@ -103,7 +103,9 @@
         function addQuantity(newItem){
           const quantity = document.createElement("input");
           quantity.type = "number";
+          quantity.style.display = "none"
           newItem.appendChild(quantity);
+          return quantity;
         }
 
         function addDeleteBtn(newItem){
@@ -114,10 +116,14 @@
           };
           newItem.appendChild(deleteButton);
         }
+  
 
-      /******************************************/
-      // Add a parent item
-      function addParrent(){
+      function addParrentIfPossible(){
         const addInput = document.getElementsByClassName("newListInput")[0];
-        checkIfThereIsInput(addInput)
+        if(addInput.value === ""){
+          alert("Enter the list name please!!!");
+        }
+        else{
+          createParent(addInput)
+        }
       }
