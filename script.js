@@ -1,4 +1,4 @@
-function makeCollapsable(element){
+      function makeCollapsable(element){
           element.style.display = (element.style.display === "block" ? "none" : "block");
       }
 
@@ -6,48 +6,43 @@ function makeCollapsable(element){
         element.style.background = (element.style.background === "green" ? "#eee" : "green");
       }
 
-      function  createmarkUpForParent(value) {
+      function Parent(value,inputID, listID){
+        this.value = value;
+        this.inputID = inputID;
+        this.listID = listID;
+      }
+
+      function createmarkUpForChild(){
+        return `
+          <label readonly="true">da</label>
+          <span class="circle"></span>
+          <span class="tick"></span>
+          <input type="number" style="display: none;">
+          <button>Delete</button>
+          <button>Edit</button>`;
+      }
+
+      function createMarkUpForParent(value,listID,inputID){
         return `
           <button type="button" class="button" onclick="makeCollapsable(this.nextElementSibling)">&#9660; ${value}</button>
-          <ul class="ListChildItemNonBullets" id="${value}list">
-            <input type="text" id="${value}input" class = "newItemInput"><br>
-            <button type="button" class="btn-primary" onclick=addChildIfPossible(document.getElementById('${value}list'),document.getElementById('${value}input'))>Insert</button>
+          <ul class="ListChildItemNonBullets" id="${listID}">
+            <input type="text" id="${inputID}" class = "newItemInput"><br>
+            <button type="button" class="btn-primary" onclick=addChildIfPossible(document.getElementById('${listID}'),document.getElementById('${inputID}'))>Insert</button>
           </ul>
         `;
-      } 
+      }
 
       function createParent(addInput){
-        /*const ul = document.getElementsByClassName("ListParentItemNonBullets")[0]
-        const li = document.createElement("li");
-        li.classList.add("ListParentItemNonBullets");
-        const button = document.createElement("button");
-        button.type = "button";
-        button.innerHTML = "&#9660; " + addInput.value;
-        const newList = document.createElement("ul");
-        newList.classList.add("ListChildItemNonBullets");
-        li.appendChild(newList);
-        button.classList.add("button");
-        ul.appendChild(button);
-        ul.appendChild(li);
-        const addButton = document.createElement("button");
-        addButton.type = "button";
-        addButton.innerHTML = "Insert";
-        addButton.classList.add("btn-primary");
-        const input = document.createElement("input");
-        input.type = "text";
-        input.className = "newItemInput";
-        newList.appendChild(input);
-        newList.appendChild(addButton);
-        button.addEventListener("click",function(){makeCollapsable(button.nextElementSibling)})
-        addButton.addEventListener("click",function(){addChildIfPossible(newList,input)})
-        */
-       
         const ul = document.getElementsByClassName("ListParentItemNonBullets")[0]
         const li = document.createElement("li");
         li.classList.add("ListParentItemNonBullets");
         ul.appendChild(li);
-        
-        li.innerHTML= createmarkUpForParent(addInput.value);
+
+        parent = new Parent(addInput.value,"input1","list1");
+        parent.getContent = function(){
+          return createMarkUpForParent(this.value,this.inputID, this.listID)
+        }
+        li.innerHTML= parent.getContent();
       }
 
       function addCheckBox(newItem){
@@ -79,7 +74,7 @@ function makeCollapsable(element){
               quantity.style.display = "none";
             }
             quantity.setAttribute("readonly", "true");
-          } 
+          }
         }
 
         function addEditBtn(newItem, label, quantity){
@@ -98,14 +93,17 @@ function makeCollapsable(element){
         }
 
         function addChild(element, input){
-          const newItem = document.createElement("li");
+          /*const newItem = document.createElement("li");
           newItem.classList.add("listItem");
           let label = addLabel(newItem, input)
           addCheckBox(newItem)
           let quantity = addQuantity(newItem)
           addDeleteBtn(newItem)
           addEditBtn(newItem,label, quantity)
-          console.log(element)
+          element.appendChild(newItem) */
+          const newItem = document.createElement("li");
+          newItem.classList.add("listItem");
+          newItem.innerHTML= createmarkUpForChild();
           element.appendChild(newItem)
         }
 
@@ -133,7 +131,7 @@ function makeCollapsable(element){
           };
           newItem.appendChild(deleteButton);
         }
-  
+
 
       function addParrentIfPossible(){
         const addInput = document.getElementsByClassName("newListInput")[0];
