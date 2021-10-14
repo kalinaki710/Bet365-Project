@@ -1,18 +1,10 @@
 
       function makeCollapsable(element){
-        if (element.style.display === "block") {
-          element.style.display = "none";
-        } else {
-          element.style.display = "block";
-          }
+          element.style.display = (element.style.display === "block" ? "none" : "block");
       }
 
       function tickCheckbox(element){
-        if (element.style. background === "green") {
-          element.style.background = "#eee";
-        } else {
-          element.style.background = "green";
-          }
+        element.style.background = (element.style.background === "green" ? "#eee" : "green");
       }
 
       function createParent(addInput){
