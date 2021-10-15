@@ -12,14 +12,37 @@
         this.listID = listID;
       }
 
-      function createmarkUpForChild(){
-        return `
-          <label readonly="true">da</label>
-          <span class="circle"></span>
-          <span class="tick"></span>
-          <input type="number" style="display: none;">
-          <button>Delete</button>
-          <button>Edit</button>`;
+      function Child(element, input){
+        this.element = element;
+        this.input = input;
+      }
+
+      function constructParent(value){
+        let parent = new Parent(value,Math.random().toString(),Math.random().toString());
+        parent.getContent = function(){
+          return createMarkUpForParent(this.value,this.inputID, this.listID)
+        }
+        return parent
+      }
+
+      function constructChild(element, input){
+        let child = new Child(element, input);
+        child.makeCheckobox = function(){
+          addCheckBox(this.element)
+        }
+        child.addDeleteButton = function(){
+          addDeleteBtn(this.element)
+        }
+        child.addLabel = function(){
+          this.label = addLabel(this.element, this.input)
+        }
+        child.addQuantity =  function(){
+          this.quantity = addQuantity(this.element)
+        }
+        child.addEditButton = function(){
+          addEditBtn(this.element, this.label, this.quantity)
+        }
+        return child
       }
 
       function createMarkUpForParent(value,listID,inputID){
@@ -38,10 +61,7 @@
         li.classList.add("ListParentItemNonBullets");
         ul.appendChild(li);
 
-        parent = new Parent(addInput.value,"input1","list1");
-        parent.getContent = function(){
-          return createMarkUpForParent(this.value,this.inputID, this.listID)
-        }
+        parent = constructParent(addInput.value)
         li.innerHTML= parent.getContent();
       }
 
@@ -93,17 +113,14 @@
         }
 
         function addChild(element, input){
-          /*const newItem = document.createElement("li");
-          newItem.classList.add("listItem");
-          let label = addLabel(newItem, input)
-          addCheckBox(newItem)
-          let quantity = addQuantity(newItem)
-          addDeleteBtn(newItem)
-          addEditBtn(newItem,label, quantity)
-          element.appendChild(newItem) */
           const newItem = document.createElement("li");
           newItem.classList.add("listItem");
-          newItem.innerHTML= createmarkUpForChild();
+          let child = constructChild(newItem, input)
+          child.addLabel()
+          child.makeCheckobox()
+          child.addQuantity()
+          child.addDeleteButton()
+          child.addEditButton()
           element.appendChild(newItem)
         }
 
