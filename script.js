@@ -1,3 +1,9 @@
+      parent = createParent("Shopping List");
+      parent.children.push("Apples")
+      parent.children.push("Potatoes")
+      parent.displayAllChildren()
+
+
       function makeCollapsable(element){
           element.style.display = (element.style.display === "block" ? "none" : "block");
       }
@@ -10,6 +16,7 @@
         this.value = value;
         this.inputID = inputID;
         this.listID = listID;
+        this.children = [];
       }
 
       function Child(element, input){
@@ -20,7 +27,14 @@
       function constructParent(value){
         let parent = new Parent(value,Math.random().toString(),Math.random().toString());
         parent.getContent = function(){
-          return createMarkUpForParent(this.value,this.inputID, this.listID)
+          return createMarkUpForParent(this.value,this.listID, this.inputID, this.buttonID)
+        }
+        parent.displayAllChildren = function(){
+          parent.children.forEach(function (item, index) {
+            element = document.getElementById(parent.listID);
+            element.appendChild(item)
+          });
+
         }
         return parent
       }
@@ -45,24 +59,30 @@
         return child
       }
 
-      function createMarkUpForParent(value,listID,inputID){
+      function createMarkUpForParent(value,listID,inputID, buttonID){
         return `
           <button type="button" class="button" onclick="makeCollapsable(this.nextElementSibling)">&#9660; ${value}</button>
           <ul class="ListChildItemNonBullets" id="${listID}">
             <input type="text" id="${inputID}" class = "newItemInput"><br>
-            <button type="button" class="btn-primary" onclick=addChildIfPossible(document.getElementById('${listID}'),document.getElementById('${inputID}'))>Insert</button>
           </ul>
         `;
       }
 
-      function createParent(addInput){
+      function createParent(value){
         const ul = document.getElementsByClassName("ListParentItemNonBullets")[0]
         const li = document.createElement("li");
         li.classList.add("ListParentItemNonBullets");
         ul.appendChild(li);
 
-        parent = constructParent(addInput.value)
+        parent = constructParent(value);
         li.innerHTML= parent.getContent();
+        const insertBtn = document.createElement("button");
+        insertBtn.classList.add("btn-primary");
+        insertBtn.innerHTML = "Insert";
+        insertBtn.addEventListener("click",function(){addChildIfPossible(parent)})
+        element = document.getElementById(parent.listID);
+        element.appendChild(insertBtn);
+        return parent
       }
 
       function addCheckBox(newItem){
@@ -104,15 +124,19 @@
           newItem.appendChild(editButton);
         }
 
-        function addChildIfPossible(element, input){
+        function addChildIfPossible(parent){
+          input = document.getElementById(parent.inputID);
+          element = document.getElementById(parent.listID);
           if(input.value === ""){
             alert("Enter the list name please!!!");
           }else{
-            addChild(element, input)
+            addChild(parent)
           }
         }
 
-        function addChild(element, input){
+        function addChild(parent){
+          input = document.getElementById(parent.inputID);
+          element = document.getElementById(parent.listID);
           const newItem = document.createElement("li");
           newItem.classList.add("listItem");
           let child = constructChild(newItem, input)
@@ -122,6 +146,8 @@
           child.addDeleteButton()
           child.addEditButton()
           element.appendChild(newItem)
+          parent.children.push(child)
+          console.log(parent.children)
         }
 
         function addLabel(newItem, input){
@@ -156,6 +182,6 @@
           alert("Enter the list name please!!!");
         }
         else{
-          createParent(addInput)
+          createParent(addInput.value)
         }
       }
