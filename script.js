@@ -1,19 +1,20 @@
-      let parents = []
-      let parent1 = createParent("Shopping List");
-      element = document.getElementById(parent1.listID);
-      apples = {element:element, input: "Apples", checkboxColor: "#eee"}
-      potatoes = {element:element, input: "Potatoes", checkboxColor: "#eee"}
-      parent1.children.push(apples)
-      parent1.children.push(potatoes)
-      parents.push(parent1)
-      //parent1.displayAllChildren()
-      let parent2 = createParent("Gas bill");
-      metres = {element:element, input: "Read the metre", checkboxColor: "#eee"}
-      parent2.children.push(metres)
-      parents.push(parent2)
-      //parent2.displayAllChildren()
-      const myJSON = JSON.stringify(parents);
-      localStorage.setItem("testJSON", myJSON);
+
+      let text = localStorage.getItem("parentInputIDJson");
+      let parentInputID = Number(JSON.parse(text));
+      if (parentInputID == 0){
+        parentInputID = 1;
+      }
+      text = localStorage.getItem("parentListIDJson");
+      let parentListID = Number(JSON.parse(text));
+      if (parentListID == 0){
+        parentListID = -1;
+      }
+
+      text = localStorage.getItem("Json");
+      let jsonID = Number(JSON.parse(text));
+
+      //localStorage.clear();
+  
 
       function makeCollapsable(element){
           element.style.display = (element.style.display === "block" ? "none" : "block");
@@ -24,11 +25,13 @@
         child.checkboxColor = element.style.background
       }
 
-      function Parent(value,inputID, listID){
+      function Parent(value,inputID, listID, jsonID){
         this.value = value;
         this.inputID = inputID;
         this.listID = listID;
         this.children = [];
+        this.jsonID = jsonID;
+        this.childIndex = 0;
       }
 
       function Child(element, input, checkboxColor, quantity){
@@ -36,17 +39,24 @@
         this.input = input;
         this.checkboxColor = checkboxColor
         this.quantity = quantity
+        this.val = ""
       }
 
       function constructParent(value){
-        let parent = new Parent(value,Math.random().toString(),Math.random().toString());
+        let parent = new Parent(value,parentInputID.toString(), parentListID.toString(), jsonID.toString());
+        parentInputID += 1
+        parentListID -= 1
+        const parentListIDJson = JSON.stringify(parentListID);
+        localStorage.setItem("parentListIDJson", parentListIDJson);
+        const parentInputIDJson = JSON.stringify(parentInputID);
+        localStorage.setItem("parentInputIDJson", parentInputIDJson);
         parent.getContent = function(){
-          return createMarkUpForParent(this.value,this.listID, this.inputID, this.buttonID)
+          return createMarkUpForParent(this.value,this.listID, this.inputID)
         }
         parent.displayAllChildren = function(){
           element = document.getElementById(parent.listID);
           parent.children.forEach(function (item, index) {
-            reCreateChild(item,element)
+            reCreateChild(item,element, parent)
           });
 
         }
@@ -62,18 +72,19 @@
           addDeleteBtn(this.element)
         }
         child.addLabel = function(){
-          this.label = addLabel(this.element, this.input.value)
+          value = document.getElementById(this.input).value;
+          this.label = addLabel(this.element, value)
         }
         child.addQuantity =  function(){
           this.quantity = addQuantity(this.element)
         }
         child.addEditButton = function(){
-          addEditBtn(this.element, this.label, this.quantity)
+          addEditBtn(this.element, this.label, this.quantity, this, this.childIndex)
         }
         return child
       }
 
-      function createMarkUpForParent(value,listID,inputID, buttonID){
+      function createMarkUpForParent(value,listID,inputID){
         return `
           <button type="button" class="button" onclick="makeCollapsable(this.nextElementSibling)">&#9660; ${value}</button>
           <ul class="ListChildItemNonBullets" id="${listID}">
@@ -83,6 +94,9 @@
       }
 
       function createParent(value){
+        jsonID += 1
+        const Json = JSON.stringify(jsonID);
+        localStorage.setItem("Json", Json);
         const ul = document.getElementsByClassName("ListParentItemNonBullets")[0]
         const li = document.createElement("li");
         li.classList.add("ListParentItemNonBullets");
@@ -96,6 +110,8 @@
         insertBtn.addEventListener("click",function(){addChildIfPossible(parent)})
         element = document.getElementById(parent.listID);
         element.appendChild(insertBtn);
+        const myJSON = JSON.stringify(parent);
+        localStorage.setItem(jsonID.toString(), myJSON);
         return parent
       }
 
@@ -110,7 +126,7 @@
         newItem.appendChild(checkmarkTick);
       }
 
-        function edit(label, quantity){
+        function edit(label, quantity, child, parent, index){
           if (label.style.display != "none"){
             label.style.display = "none";
             textBox = document.createElement("input");
@@ -123,19 +139,24 @@
           }else {
             label.style.display = "inline";
             textBox = label.previousElementSibling;
-            label.innerHTML = textBox.value;
+            label.innerHTML = textBox.value
             textBox.remove();
             if (quantity.value == 0) {
               quantity.style.display = "none";
             }
             quantity.setAttribute("readonly", "true");
+            child.val = label.innerHTML
+            child.quantity = quantity.value
+            parent.children[index] = child
+            const myJSON = JSON.stringify(parent);
+            localStorage.setItem(parent.jsonID.toString(), myJSON);
           }
         }
 
-        function addEditBtn(newItem, label, quantity){
+        function addEditBtn(newItem, label, quantity, child, parent, index){
           const editButton = document.createElement("button");
           editButton.innerHTML = "Edit";
-          editButton.addEventListener("click",function(){edit(label, quantity)})
+          editButton.addEventListener("click",function(){edit(label, quantity, child, parent, index)})
           newItem.appendChild(editButton);
         }
 
@@ -150,42 +171,47 @@
         }
 
         function addChild(parent){
+          parent.childIndex += 1
           input = document.getElementById(parent.inputID);
           element = document.getElementById(parent.listID);
           const newItem = document.createElement("li");
           newItem.classList.add("listItem");
           
-          let child = constructChild(newItem, input)
+          let child = constructChild(newItem, parent.inputID)
           child.addLabel(newItem, input.value)
+          child.val = input.value
           child.makeCheckobox()
           child.addQuantity()
           child.addDeleteButton()
           child.addEditButton()
           element.appendChild(newItem)
           parent.children.push(child)
+          const myJSON = JSON.stringify(parent);
+          localStorage.setItem(parent.jsonID.toString(), myJSON);
+          
         }
 
-        function reCreateChild(child, element){
+        function reCreateChild(child, element, parent, index){
           const newItem = document.createElement("li");
           newItem.classList.add("listItem");
-          const label = addLabel(newItem, child.input)
+          const label = addLabel(newItem, child.val)
           const checkmarkCircle = document.createElement("span");
           checkmarkCircle.className = "circle";
           checkmarkCircle.addEventListener("click",function(){tickCheckbox(checkmarkCircle, child)})
           const checkmarkTick = document.createElement("span");
           checkmarkTick.className = "tick";
-          newItem.appendChild(checkmarkCircle);
           checkmarkCircle.style.background = child.checkboxColor
+          newItem.appendChild(checkmarkCircle);
           newItem.appendChild(checkmarkTick);
 
           const quantity = addQuantity(newItem)
-          quantity.value = 0
+          quantity.value = child.quantity
           if (quantity.value != 0){
             quantity.style.display = "inline"
           }
 
           addDeleteBtn(newItem)
-          addEditBtn(newItem, label, quantity)
+          addEditBtn(newItem, label, quantity, child, parent, index)
           
           element.appendChild(newItem)
         }
@@ -211,6 +237,7 @@
           deleteButton.innerHTML = "Delete";
           deleteButton.onclick = function () {
             newItem.remove();
+
           };
           newItem.appendChild(deleteButton);
         }
@@ -227,29 +254,42 @@
       }
 
       function reCreateParent(parent){
-        console.log(parent)
-        let par = new Parent(parent.value,parent.inputID,parent.listID);
+        let par = new Parent(parent.value,parent.inputID,parent.listID, parent.jsonID);
         par.children = parent.children
-        console.log(parent.listID)
-        console.log(par.listID)
         par.getContent = function(){
-          return createMarkUpForParent(this.value,this.listID, this.inputID, this.buttonID)
+          return createMarkUpForParent(this.value,this.listID, this.inputID)
         }
         par.displayAllChildren = function(){
-          element = document.getElementById(par.listID);
+          element = document.getElementById(this.listID);
           par.children.forEach(function (item, index) {
-            reCreateChild(item,element)
+            reCreateChild(item,element, par, index)
           });
 
         }
+        const ul = document.getElementsByClassName("ListParentItemNonBullets")[0]
+        const li = document.createElement("li");
+        li.classList.add("ListParentItemNonBullets");
+        ul.appendChild(li);
+
+        li.innerHTML= par.getContent();
+        const insertBtn = document.createElement("button");
+        insertBtn.classList.add("btn-primary");
+        insertBtn.innerHTML = "Insert";
+        insertBtn.addEventListener("click",function(){addChildIfPossible(par)})
+        element = document.getElementById(par.listID);
+        element.appendChild(insertBtn);
         par.displayAllChildren();
       }
 
-      let text = localStorage.getItem("testJSON");
-      p = JSON.parse(text);
-      console.log(p[0])
-      p.forEach(function (item, index){
-        reCreateParent(item)
-      });
+      for (const [key, value] of Object.entries(localStorage)){
+        if(key != "parentInputIDJson" && key != "parentListIDJson" && key != "Json"){
+          p = JSON.parse(value);
+          reCreateParent(p)
+        }
+       
+      }
+
+
+  
       
   
