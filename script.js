@@ -91,7 +91,7 @@
         return `
           <button type="button" class="button" onclick="makeCollapsable(this.nextElementSibling)">&#9660; ${value}</button>
           <ul class="ListChildItemNonBullets" id="${listID}">
-            <input type="text" id="${inputID}" class = "newItemInput"><br>
+            <input type="text" id="${inputID}" class = "newItemInput" required pattern="[a-zA-Z]*">
           </ul>
         `;
       }
@@ -135,6 +135,10 @@
       }
 
         function edit(label, quantity, child, parent, index){
+          if (!quantity.checkValidity()) {
+            return;
+          }
+          
           if (label.style.display != "none"){
             label.style.display = "none";
             textBox = document.createElement("input");
@@ -170,12 +174,10 @@
 
         function addChildIfPossible(parent){
           input = document.getElementById(parent.inputID);
-          element = document.getElementById(parent.listID);
-          if(input.value === ""){
-            alert("Enter the list name please!!!");
-          }else{
-            addChild(parent)
+          if(!input.checkValidity()){
+            return
           }
+          addChild(parent)
         }
 
         function addChild(parent){
@@ -236,6 +238,8 @@
           const quantity = document.createElement("input");
           quantity.type = "number";
           quantity.style.display = "none"
+          quantity.min = 0;
+          quantity.pattern ="[0-9]*"
           newItem.appendChild(quantity);
           return quantity;
         }
@@ -259,12 +263,10 @@
 
       function addParrentIfPossible(){
         const addInput = document.getElementsByClassName("newListInput")[0];
-        if(addInput.value === ""){
-          alert("Enter the list name please!!!");
+        if(!addInput.checkValidity()){
+          return
         }
-        else{
-          createParent(addInput.value)
-        }
+        createParent(addInput.value)
       }
 
       function reCreateParent(parent){
