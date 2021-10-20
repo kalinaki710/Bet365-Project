@@ -20,9 +20,12 @@
           element.style.display = (element.style.display === "block" ? "none" : "block");
       }
 
-      function tickCheckbox(element, child){
+      function tickCheckbox(element, child, parent, index){
         element.style.background = (element.style.background === "green" ? "#eee" : "green");
         child.checkboxColor = element.style.background
+        parent.children[index] = child
+        const myJSON = JSON.stringify(parent);
+        localStorage.setItem(parent.jsonID.toString(), myJSON);
       }
 
       function Parent(value,inputID, listID, jsonID){
@@ -63,13 +66,13 @@
         return parent
       }
 
-      function constructChild(element, input){
-        let child = new Child(element, input, "#eee", "0");
+      function constructChild(element, parent){
+        let child = new Child(element, parent.inputID, "#eee", "0");
         child.makeCheckobox = function(){
-          addCheckBox(this.element, this)
+          addCheckBox(this.element, child, parent)
         }
         child.addDeleteButton = function(){
-          addDeleteBtn(this.element)
+          addDeleteBtn(this.element,parent,child)
         }
         child.addLabel = function(){
           value = document.getElementById(this.input).value;
@@ -79,7 +82,7 @@
           this.quantity = addQuantity(this.element)
         }
         child.addEditButton = function(){
-          addEditBtn(this.element, this.label, this.quantity, this, this.childIndex)
+          addEditBtn(this.element, this.label, this.quantity, child, parent, this.childIndex)
         }
         return child
       }
@@ -115,11 +118,16 @@
         return parent
       }
 
-      function addCheckBox(newItem, child){
+      function addCheckBox(newItem, child, parent){
         const checkmarkCircle = document.createElement("span");
         checkmarkCircle.className = "circle";
         checkmarkCircle.style.background = "#eee"
-        checkmarkCircle.addEventListener("click",function(){tickCheckbox(checkmarkCircle, child)})
+        checkmarkCircle.addEventListener("click",function(){
+          const index = parent.children.indexOf(child);
+          if (index > -1) {
+            tickCheckbox(checkmarkCircle, child, parent, index)
+          }
+        })
         const checkmarkTick = document.createElement("span");
         checkmarkTick.className = "tick";
         newItem.appendChild(checkmarkCircle);
@@ -177,7 +185,7 @@
           const newItem = document.createElement("li");
           newItem.classList.add("listItem");
           
-          let child = constructChild(newItem, parent.inputID)
+          let child = constructChild(newItem, parent)
           child.addLabel(newItem, input.value)
           child.val = input.value
           child.makeCheckobox()
@@ -197,7 +205,7 @@
           const label = addLabel(newItem, child.val)
           const checkmarkCircle = document.createElement("span");
           checkmarkCircle.className = "circle";
-          checkmarkCircle.addEventListener("click",function(){tickCheckbox(checkmarkCircle, child)})
+          checkmarkCircle.addEventListener("click",function(){tickCheckbox(checkmarkCircle, child, parent, index)})
           const checkmarkTick = document.createElement("span");
           checkmarkTick.className = "tick";
           checkmarkCircle.style.background = child.checkboxColor
@@ -210,7 +218,7 @@
             quantity.style.display = "inline"
           }
 
-          addDeleteBtn(newItem)
+          addDeleteBtn(newItem, parent, child)
           addEditBtn(newItem, label, quantity, child, parent, index)
           
           element.appendChild(newItem)
@@ -232,12 +240,18 @@
           return quantity;
         }
 
-        function addDeleteBtn(newItem){
+        function addDeleteBtn(newItem, parent, child){
           const deleteButton = document.createElement("button");
           deleteButton.innerHTML = "Delete";
           deleteButton.onclick = function () {
             newItem.remove();
-
+            
+            index =  parent.children.indexOf(child)
+            if (index > -1) {
+              parent.children.splice(index, 1);
+            }
+            const myJSON = JSON.stringify(parent);
+            localStorage.setItem(parent.jsonID.toString(), myJSON); 
           };
           newItem.appendChild(deleteButton);
         }
