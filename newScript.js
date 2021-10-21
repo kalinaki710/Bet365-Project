@@ -14,25 +14,27 @@ text = localStorage.getItem("Json");
 let jsonID = Number(JSON.parse(text));
 
 //localStorage.clear();
-
+console.log(Object.entries(localStorage))
 for (const [key, value] of Object.entries(localStorage)){
   if(key != "parentInputIDJson" && key != "parentListIDJson" && key != "Json"){
     p = JSON.parse(value);
-    console.log(p)
     let parent = new Parent(p.value,p.inputID,p.listID, p.jsonID);
     parent.children = p.children
-    console.log(value)
     parent.getContent = function(){
       return createMarkUpForParent(this.value,this.listID, this.inputID)
     }
     parent.displayAllChildren = function(){
+      temp = []
       element = document.getElementById(this.listID);
-      const newItem = document.createElement("li");
-      newItem.classList.add("listItem");
       parent.children.forEach(function (item, index) {
-        child = initialiseChild(element,parent,item.checkboxColor,item.quantity,item.val)
+        const newItem = document.createElement("li");
+        newItem.classList.add("listItem");
+        child = initialiseChild(newItem,parent,item.checkboxColor,item.quantity,item.val, item.index)
+        console.log(item.val)
         addChild(parent, child.val, element, child, newItem)
+        temp.push(child)
       });
+      parent.children = temp
     }
     createParent(parent)
     parent.displayAllChildren()
@@ -41,12 +43,13 @@ for (const [key, value] of Object.entries(localStorage)){
 //****************************************************
 
 // The objects
-function Child(element, input, checkboxColor, quantity){
+function Child(element, input, checkboxColor, quantity, index){
   this.element = element;
   this.input = input;
   this.checkboxColor = checkboxColor
   this.quantity = quantity
   this.val = ""
+  this.index = index
 }
 
 function Parent(value,inputID, listID, jsonID){
@@ -68,16 +71,6 @@ function constructParent(value){
   localStorage.setItem("parentInputIDJson", parentInputIDJson);
   parent.getContent = function(){
     return createMarkUpForParent(this.value,this.listID, this.inputID)
-  }
-  parent.displayAllChildren = function(){
-    const newItem = document.createElement("li");
-    newItem.classList.add("listItem");
-    element = document.getElementById(parent.listID);
-    parent.children.forEach(function (item, index) {
-      input = document.getElementById(parent.inputID);
-      addChild(parent, input.value, element, item)
-    });
-
   }
   return parent
 }
@@ -123,8 +116,12 @@ function addChildIfPossible(parent){
   element = document.getElementById(parent.listID);
   const newItem = document.createElement("li");
   newItem.classList.add("listItem");
-  let child = constructChild(newItem, parent,element)
+  let child = constructChild(newItem, parent, parent.childIndex)
   addChild(parent, input.value, element, child, newItem)
+  parent.children.push(child)
+  console.log(parent.children)
+  const myJSON = JSON.stringify(parent);
+  localStorage.setItem(parent.jsonID.toString(), myJSON);
 }
 
 function addChild(parent, value, element, child, newItem){
@@ -135,29 +132,27 @@ function addChild(parent, value, element, child, newItem){
   child.addDeleteButton()
   child.addEditButton()
   element.appendChild(newItem)
-  parent.children.push(child)
-  const myJSON = JSON.stringify(parent);
-  localStorage.setItem(parent.jsonID.toString(), myJSON);
-  
 }
 
 
-function constructChild(element, parent){
+function constructChild(element, parent, index){
   let value = document.getElementById(parent.inputID).value;
-  let child = initialiseChild(element, parent, "#eee", "0", value)
+  let child = initialiseChild(element, parent, "#eee", "0", value, index)
   return child
 }
 
-function initialiseChild(element, parent, color, quantity, value){
-  let child = new Child(element, parent.inputID, color, quantity);
+function initialiseChild(element, parent, color, quantity, value, index){
+  console.log(value)
+  let child = new Child(element, parent.inputID, color, quantity, index);
   child.makeCheckobox = function(){
     addCheckBox(this.element, child, parent)
   }
   child.addDeleteButton = function(){
-    addDeleteBtn(this.element,parent,child)
+    addDeleteBtn(this.element,parent,child, index)
   }
   child.addLabel = function(){
     this.label = addLabel(this.element, value)
+    console.log(this.label)
   }
   child.addQuantity =  function(){
     this.quantity = addQuantity(this.element)
@@ -197,7 +192,7 @@ function addCheckBox(newItem, child, parent){
     if (!quantity.checkValidity()) {
       return;
     }
-    
+
     if (label.style.display != "none"){
       label.style.display = "none";
       textBox = document.createElement("input");
@@ -231,30 +226,6 @@ function addCheckBox(newItem, child, parent){
     newItem.appendChild(editButton);
   }
 
-  function reCreateChild(child, element, parent, index){
-    const newItem = document.createElement("li");
-    newItem.classList.add("listItem");
-    const label = addLabel(newItem, child.val)
-    const checkmarkCircle = document.createElement("span");
-    checkmarkCircle.className = "circle";
-    checkmarkCircle.addEventListener("click",function(){tickCheckbox(checkmarkCircle, child, parent, index)})
-    const checkmarkTick = document.createElement("span");
-    checkmarkTick.className = "tick";
-    checkmarkCircle.style.background = child.checkboxColor
-    newItem.appendChild(checkmarkCircle);
-    newItem.appendChild(checkmarkTick);
-
-    const quantity = addQuantity(newItem)
-    quantity.value = child.quantity
-    if (quantity.value != 0){
-      quantity.style.display = "inline"
-    }
-
-    addDeleteBtn(newItem, parent, child)
-    addEditBtn(newItem, label, quantity, child, parent, index)
-    
-    element.appendChild(newItem)
-  }
 
   function addLabel(newItem, value){
     let label = document.createElement("label");
@@ -274,18 +245,14 @@ function addCheckBox(newItem, child, parent){
     return quantity;
   }
 
-  function addDeleteBtn(newItem, parent, child){
+  function addDeleteBtn(newItem, parent, child, index){
     const deleteButton = document.createElement("button");
     deleteButton.innerHTML = "Delete";
     deleteButton.onclick = function () {
       newItem.remove();
-      
-      index =  parent.children.indexOf(child)
-      if (index > -1) {
-        parent.children.splice(index, 1);
-      }
+      parent.children =  parent.children.splice(index, 1);
       const myJSON = JSON.stringify(parent);
-      localStorage.setItem(parent.jsonID.toString(), myJSON); 
+      localStorage.setItem(parent.jsonID.toString(), myJSON);
     };
     newItem.appendChild(deleteButton);
   }

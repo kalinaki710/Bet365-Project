@@ -14,7 +14,7 @@
       let jsonID = Number(JSON.parse(text));
 
       //localStorage.clear();
-  
+
 
       function makeCollapsable(element){
           element.style.display = (element.style.display === "block" ? "none" : "block");
@@ -111,8 +111,20 @@
         insertBtn.classList.add("btn-primary");
         insertBtn.innerHTML = "Insert";
         insertBtn.addEventListener("click",function(){addChildIfPossible(parent)})
+        const deleteBtn = document.createElement("button");
+        deleteBtn.classList.add("btn-primary");
+        deleteBtn.innerHTML = "Delete";
+        deleteBtn.addEventListener("click",function(){
+          if (parent.children.length > 0 && !window.confirm("This item has sub-items. Are you sure you want to delete everything?")) {
+            return;
+          }
+          li.remove()
+          const myJSON = JSON.stringify(parent);
+          localStorage.removeItem(par.jsonID);
+        })
         element = document.getElementById(parent.listID);
         element.appendChild(insertBtn);
+        element.appendChild(deleteBtn);
         const myJSON = JSON.stringify(parent);
         localStorage.setItem(jsonID.toString(), myJSON);
         return parent
@@ -138,7 +150,7 @@
           if (!quantity.checkValidity()) {
             return;
           }
-          
+
           if (label.style.display != "none"){
             label.style.display = "none";
             textBox = document.createElement("input");
@@ -186,7 +198,7 @@
           element = document.getElementById(parent.listID);
           const newItem = document.createElement("li");
           newItem.classList.add("listItem");
-          
+
           let child = constructChild(newItem, parent)
           child.addLabel(newItem, input.value)
           child.val = input.value
@@ -198,7 +210,7 @@
           parent.children.push(child)
           const myJSON = JSON.stringify(parent);
           localStorage.setItem(parent.jsonID.toString(), myJSON);
-          
+
         }
 
         function reCreateChild(child, element, parent, index){
@@ -222,7 +234,7 @@
 
           addDeleteBtn(newItem, parent, child)
           addEditBtn(newItem, label, quantity, child, parent, index)
-          
+
           element.appendChild(newItem)
         }
 
@@ -249,13 +261,13 @@
           deleteButton.innerHTML = "Delete";
           deleteButton.onclick = function () {
             newItem.remove();
-            
+
             index =  parent.children.indexOf(child)
             if (index > -1) {
               parent.children.splice(index, 1);
             }
             const myJSON = JSON.stringify(parent);
-            localStorage.setItem(parent.jsonID.toString(), myJSON); 
+            localStorage.setItem(parent.jsonID.toString(), myJSON);
           };
           newItem.appendChild(deleteButton);
         }
@@ -292,8 +304,20 @@
         insertBtn.classList.add("btn-primary");
         insertBtn.innerHTML = "Insert";
         insertBtn.addEventListener("click",function(){addChildIfPossible(par)})
+        const deleteBtn = document.createElement("button");
+        deleteBtn.classList.add("btn-primary");
+        deleteBtn.innerHTML = "Delete";
+        deleteBtn.addEventListener("click",function(){
+          if (parent.children.length > 0 && !window.confirm("This item has sub-items. Are you sure you want to delete everything?")) {
+            return;
+          }
+          li.remove()
+          const myJSON = JSON.stringify(parent);
+          localStorage.removeItem(par.jsonID);
+        })
         element = document.getElementById(par.listID);
         element.appendChild(insertBtn);
+                element.appendChild(deleteBtn);
         par.displayAllChildren();
       }
 
@@ -302,10 +326,5 @@
           p = JSON.parse(value);
           reCreateParent(p)
         }
-       
+
       }
-
-
-  
-      
-  
