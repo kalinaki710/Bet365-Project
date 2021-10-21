@@ -18,19 +18,24 @@ let jsonID = Number(JSON.parse(text));
 for (const [key, value] of Object.entries(localStorage)){
   if(key != "parentInputIDJson" && key != "parentListIDJson" && key != "Json"){
     p = JSON.parse(value);
+    console.log(p)
     let parent = new Parent(p.value,p.inputID,p.listID, p.jsonID);
-    par.children = parent.children
+    parent.children = p.children
     console.log(value)
-    par.getContent = function(){
+    parent.getContent = function(){
       return createMarkUpForParent(this.value,this.listID, this.inputID)
     }
-    par.displayAllChildren = function(){
+    parent.displayAllChildren = function(){
       element = document.getElementById(this.listID);
-      par.children.forEach(function (item, index) {
-        reCreateChild(item,element, par, index)
+      const newItem = document.createElement("li");
+      newItem.classList.add("listItem");
+      parent.children.forEach(function (item, index) {
+        child = initialiseChild(element,parent,item.checkboxColor,item.quantity,item.val)
+        addChild(parent, child.val, element, child, newItem)
       });
     }
-    createParent(par)
+    createParent(parent)
+    parent.displayAllChildren()
   }
 }
 //****************************************************
@@ -65,9 +70,12 @@ function constructParent(value){
     return createMarkUpForParent(this.value,this.listID, this.inputID)
   }
   parent.displayAllChildren = function(){
+    const newItem = document.createElement("li");
+    newItem.classList.add("listItem");
     element = document.getElementById(parent.listID);
     parent.children.forEach(function (item, index) {
-      reCreateChild(item,element, parent)
+      input = document.getElementById(parent.inputID);
+      addChild(parent, input.value, element, item)
     });
 
   }
@@ -89,13 +97,10 @@ function addParrentIfPossible(){
 }
 
 function createParent(parent){
-  
   const ul = document.getElementsByClassName("ListParentItemNonBullets")[0]
   const li = document.createElement("li");
   li.classList.add("ListParentItemNonBullets");
   ul.appendChild(li);
-
-  
   li.innerHTML= parent.getContent();
   const insertBtn = document.createElement("button");
   insertBtn.classList.add("btn-primary");
@@ -107,8 +112,44 @@ function createParent(parent){
 
 
 /**************** */
+
+function addChildIfPossible(parent){
+  input = document.getElementById(parent.inputID);
+  if(!input.checkValidity()){
+    return
+  }
+  parent.childIndex += 1
+  input = document.getElementById(parent.inputID);
+  element = document.getElementById(parent.listID);
+  const newItem = document.createElement("li");
+  newItem.classList.add("listItem");
+  let child = constructChild(newItem, parent,element)
+  addChild(parent, input.value, element, child, newItem)
+}
+
+function addChild(parent, value, element, child, newItem){
+  child.addLabel(newItem,value)
+  child.val = value
+  child.makeCheckobox()
+  child.addQuantity()
+  child.addDeleteButton()
+  child.addEditButton()
+  element.appendChild(newItem)
+  parent.children.push(child)
+  const myJSON = JSON.stringify(parent);
+  localStorage.setItem(parent.jsonID.toString(), myJSON);
+  
+}
+
+
 function constructChild(element, parent){
-  let child = new Child(element, parent.inputID, "#eee", "0");
+  let value = document.getElementById(parent.inputID).value;
+  let child = initialiseChild(element, parent, "#eee", "0", value)
+  return child
+}
+
+function initialiseChild(element, parent, color, quantity, value){
+  let child = new Child(element, parent.inputID, color, quantity);
   child.makeCheckobox = function(){
     addCheckBox(this.element, child, parent)
   }
@@ -116,7 +157,6 @@ function constructChild(element, parent){
     addDeleteBtn(this.element,parent,child)
   }
   child.addLabel = function(){
-    value = document.getElementById(this.input).value;
     this.label = addLabel(this.element, value)
   }
   child.addQuantity =  function(){
@@ -189,35 +229,6 @@ function addCheckBox(newItem, child, parent){
     editButton.innerHTML = "Edit";
     editButton.addEventListener("click",function(){edit(label, quantity, child, parent, index)})
     newItem.appendChild(editButton);
-  }
-
-  function addChildIfPossible(parent){
-    input = document.getElementById(parent.inputID);
-    if(!input.checkValidity()){
-      return
-    }
-    addChild(parent)
-  }
-
-  function addChild(parent){
-    parent.childIndex += 1
-    input = document.getElementById(parent.inputID);
-    element = document.getElementById(parent.listID);
-    const newItem = document.createElement("li");
-    newItem.classList.add("listItem");
-    
-    let child = constructChild(newItem, parent)
-    child.addLabel(newItem, input.value)
-    child.val = input.value
-    child.makeCheckobox()
-    child.addQuantity()
-    child.addDeleteButton()
-    child.addEditButton()
-    element.appendChild(newItem)
-    parent.children.push(child)
-    const myJSON = JSON.stringify(parent);
-    localStorage.setItem(parent.jsonID.toString(), myJSON);
-    
   }
 
   function reCreateChild(child, element, parent, index){
