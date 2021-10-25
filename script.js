@@ -13,7 +13,7 @@
       text = localStorage.getItem("Json");
       let jsonID = Number(JSON.parse(text));
 
-      //localStorage.clear();
+      //slocalStorage.clear();
 
 
       function makeCollapsable(element){
@@ -91,7 +91,7 @@
         return `
           <button type="button" class="button" onclick="makeCollapsable(this.nextElementSibling)">&#9660; ${value}</button>
           <ul class="ListChildItemNonBullets" id="${listID}">
-            <input type="text" id="${inputID}" class = "newItemInput" required pattern="[a-zA-Z]*">
+            <input type="text" id="${inputID}" class = "newItemInput" required pattern="[a-z][a-z\s]*">
           </ul>
         `;
       }
@@ -148,6 +148,7 @@
 
         function edit(label, quantity, child, parent, index){
           if (!quantity.checkValidity()) {
+            console.log("ka")
             return;
           }
 
@@ -156,6 +157,8 @@
             textBox = document.createElement("input");
             textBox.type = "input";
             textBox.className = "newItemInput";
+            textBox.pattern = "[a-z][a-z\s]"
+            textBox.setAttribute("required", "")
             textBox.value = label.innerHTML;
             label.parentNode.insertBefore(textBox, label);
             quantity.style.display = "inline";
@@ -193,6 +196,8 @@
         }
 
         function addChild(parent){
+          startLoadingScreen()
+          setTimeout(stopLoadingScreen, 500);
           parent.childIndex += 1
           input = document.getElementById(parent.inputID);
           element = document.getElementById(parent.listID);
@@ -253,6 +258,7 @@
           quantity.min = 0;
           quantity.pattern ="[0-9]*"
           newItem.appendChild(quantity);
+          console.log("dadada")
           return quantity;
         }
 
@@ -321,10 +327,31 @@
         par.displayAllChildren();
       }
 
-      for (const [key, value] of Object.entries(localStorage)){
-        if(key != "parentInputIDJson" && key != "parentListIDJson" && key != "Json"){
-          p = JSON.parse(value);
-          reCreateParent(p)
-        }
-
+      function startLoadingScreen() {
+        document.getElementById("window").style.display = "block";
+        document.getElementById("loader").style.display = "block";
       }
+
+    function stopLoadingScreen() {
+      document.getElementById("window").style.display = "none";
+      document.getElementById("loader").style.display = "none";
+    }
+
+    function loaderMarkup() {
+      return `<div id="loader"></div>`
+    }
+
+    function windowMarkup() {
+      return `<div id="window"></div>`
+  }
+
+    document.body.innerHTML += windowMarkup();
+    document.body.innerHTML += loaderMarkup();
+
+    for (const [key, value] of Object.entries(localStorage)){
+      if(key != "parentInputIDJson" && key != "parentListIDJson" && key != "Json"){
+        p = JSON.parse(value);
+        reCreateParent(p)
+      }
+
+    }
